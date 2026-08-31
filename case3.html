@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Konviva LMS — Design System | Renata Oliveira</title>
+<meta name="description" content="Governança e auditoria de Design System na plataforma LMS Konviva, elevando maturidade visual e padronização de componentes para o Summit da Sênior.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root[data-theme="dark"] {
+  --bg:           #0C0C0B;
+  --bg-alt:       #161614;
+  --surface:      #1E1E1B;
+  --border:       rgba(255,255,255,0.08);
+  --border-soft:  rgba(255,255,255,0.04);
+  --text:         #FAFAF8;
+  --text-muted:   rgba(255,255,255,0.55);
+  --text-subtle:  rgba(255,255,255,0.32);
+  --accent:       #B8956A;
+  --accent-light: #D4B896;
+  --tag-border:   rgba(255,255,255,0.12);
+  --tag-text:     rgba(255,255,255,0.55);
+  --topbar-bg:    rgba(12,12,11,0.72);
+  --placeholder-bg: linear-gradient(135deg, #161614 0%, #1E1E1B 100%);
+  --placeholder-pattern: rgba(184,149,106,0.06);
+  --toggle-bg:    rgba(255,255,255,0.08);
+}
+
+:root[data-theme="light"] {
+  --bg:           #F7F5F0;
+  --bg-alt:       #EFEBE2;
+  --surface:      #FFFFFF;
+  --border:       rgba(28,24,20,0.10);
+  --border-soft:  rgba(28,24,20,0.05);
+  --text:         #1C1814;
+  --text-muted:   rgba(28,24,20,0.68);
+  --text-subtle:  rgba(28,24,20,0.40);
+  --accent:       #8C6A3F;
+  --accent-light: #6B4F2D;
+  --tag-border:   rgba(28,24,20,0.14);
+  --tag-text:     rgba(28,24,20,0.60);
+  --topbar-bg:    rgba(247,245,240,0.78);
+  --placeholder-bg: linear-gradient(135deg, #EFEBE2 0%, #F7F5F0 100%);
+  --placeholder-pattern: rgba(140,106,63,0.08);
+  --toggle-bg:    rgba(0,0,0,0.06);
+}
+
+:root {
+  --container: 880px;
+  --serif: 'Playfair Display', Georgia, serif;
+  --sans:  'Jost', 'Helvetica Neue', sans-serif;
+  --transition: background-color .5s ease, color .5s ease, border-color .5s ease;
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  background: var(--bg); color: var(--text);
+  font-family: var(--sans); font-weight: 300;
+  line-height: 1.7; overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  transition: var(--transition);
+}
+
+::-webkit-scrollbar { width: 2px; }
+::-webkit-scrollbar-track { background: var(--bg-alt); }
+::-webkit-scrollbar-thumb { background: var(--accent); }
+
+a { color: inherit; text-decoration: none; }
+
+.wrap { max-width: var(--container); margin: 0 auto; padding: 0 clamp(1.5rem, 5vw, 3rem); }
+
+.theme-toggle {
+  position: fixed; bottom: 2rem; right: 2rem; z-index: 600;
+  width: 46px; height: 46px; border-radius: 50%;
+  background: var(--toggle-bg); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background 0.3s, transform 0.3s;
+  backdrop-filter: blur(12px);
+}
+.theme-toggle:hover { transform: scale(1.1); }
+.theme-toggle svg { width: 17px; height: 17px; color: var(--text); position: absolute; transition: opacity 0.3s, transform 0.4s; }
+[data-theme="dark"]  .icon-sun  { opacity: 1; transform: rotate(0deg); }
+[data-theme="dark"]  .icon-moon { opacity: 0; transform: rotate(90deg); }
+[data-theme="light"] .icon-sun  { opacity: 0; transform: rotate(-90deg); }
+[data-theme="light"] .icon-moon { opacity: 1; transform: rotate(0deg); }
+
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  background: var(--topbar-bg);
+  border-bottom: 1px solid var(--border-soft);
+  transition: var(--transition);
+}
+.topbar__inner {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.25rem clamp(1.5rem, 5vw, 3rem);
+  max-width: 1080px; margin: 0 auto; gap: 1rem;
+}
+.back {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  font-size: 0.82rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text-muted); transition: color .3s, gap .3s;
+}
+.back:hover { color: var(--accent-light); gap: 0.9rem; }
+.back__arrow { font-family: var(--serif); font-style: italic; font-size: 1rem; }
+.brand { font-family: var(--serif); font-style: italic; font-size: 0.95rem; color: var(--text-muted); letter-spacing: 0.02em; }
+
+.hero { padding: clamp(5rem, 12vw, 9rem) 0 clamp(2rem, 5vw, 3rem); }
+.hero__eyebrow {
+  display: flex; align-items: center; gap: 1rem;
+  font-size: 0.78rem; letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 2rem;
+}
+.hero__eyebrow::before { content: ""; width: 40px; height: 1px; background: var(--accent); }
+
+.hero__title {
+  font-family: var(--serif); font-weight: 300;
+  font-size: clamp(2rem, 5vw, 3.8rem);
+  line-height: 1.1; letter-spacing: -0.015em; margin-bottom: 1.5rem;
+}
+.hero__title em { font-style: italic; color: var(--accent-light); font-weight: 300; }
+
+.hero__sub {
+  font-size: clamp(1.05rem, 1.6vw, 1.2rem);
+  color: var(--text-muted); max-width: 640px;
+  font-weight: 300; margin-bottom: 2.5rem;
+}
+
+.tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.tag {
+  font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--tag-text); border: 1px solid var(--tag-border);
+  padding: 0.55rem 0.95rem; border-radius: 999px;
+}
+
+.hero-image { margin: clamp(2.5rem, 5vw, 4rem) 0 0; }
+
+.meta {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 2rem; padding: 2.5rem 0;
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  margin-top: 3rem;
+}
+.meta__item h4 {
+  font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--text-subtle); font-weight: 400; margin-bottom: 0.6rem;
+}
+.meta__item p { font-family: var(--serif); font-size: 1rem; color: var(--text); font-style: italic; }
+@media (max-width: 720px) { .meta { grid-template-columns: repeat(2, 1fr); gap: 1.75rem; } }
+
+section.block { padding: clamp(4rem, 9vw, 7rem) 0; border-bottom: 1px solid var(--border-soft); }
+.section__num { font-family: var(--serif); font-style: italic; color: var(--accent); font-size: 0.95rem; margin-bottom: 1rem; display: block; }
+.section__title {
+  font-family: var(--serif); font-weight: 300;
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  line-height: 1.2; letter-spacing: -0.01em; margin-bottom: 2rem;
+}
+.lead { font-size: clamp(1.05rem, 1.5vw, 1.2rem); color: var(--text); line-height: 1.7; font-weight: 300; margin-bottom: 1.5rem; max-width: 720px; }
+p { color: var(--text-muted); margin-bottom: 1.25rem; max-width: 720px; }
+p strong, .lead strong { color: var(--text); font-weight: 500; }
+
+ul.list { list-style: none; margin: 1.5rem 0; max-width: 720px; }
+ul.list li { position: relative; padding: 0.75rem 0 0.75rem 1.75rem; border-bottom: 1px solid var(--border-soft); color: var(--text-muted); }
+ul.list li:last-child { border-bottom: none; }
+ul.list li::before { content: ""; position: absolute; left: 0; top: 1.35rem; width: 8px; height: 1px; background: var(--accent); }
+ul.list li strong { color: var(--text); font-weight: 500; }
+
+.subhead { font-family: var(--serif); font-style: italic; font-size: 1.25rem; color: var(--accent-light); margin: 2.5rem 0 1rem; font-weight: 400; }
+
+.cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin: 2rem 0; }
+@media (max-width: 720px) { .cards { grid-template-columns: 1fr; } }
+.card {
+  background: var(--bg-alt); border: 1px solid var(--border);
+  padding: 2rem 1.75rem; border-radius: 4px;
+  transition: border-color .4s, transform .4s;
+}
+.card:hover { border-color: var(--accent); transform: translateY(-3px); }
+.card__num { font-family: var(--serif); font-style: italic; color: var(--accent); font-size: 0.9rem; margin-bottom: 0.75rem; }
+.card h3 { font-family: var(--serif); font-weight: 400; font-size: 1.2rem; line-height: 1.3; margin-bottom: 0.85rem; color: var(--text); }
+.card p { color: var(--text-muted); font-size: 0.92rem; margin-bottom: 0.85rem; }
+.card .arrow { font-family: var(--serif); font-style: italic; color: var(--accent-light); font-size: 0.92rem; display: block; padding-top: 0.5rem; border-top: 1px solid var(--border-soft); }
+
+.states { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.75rem; margin: 2rem 0; }
+.state {
+  text-align: center; padding: 1.25rem 0.75rem;
+  border: 1px solid var(--border); border-radius: 4px;
+  font-size: 0.78rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--text-muted); background: var(--bg-alt);
+}
+.state strong { display: block; color: var(--accent-light); font-weight: 400; font-family: var(--serif); font-style: italic; font-size: 0.95rem; letter-spacing: 0; text-transform: none; margin-bottom: 0.4rem; }
+@media (max-width: 720px) { .states { grid-template-columns: repeat(2, 1fr); } }
+
+.ruler { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin: 2rem 0; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+.ruler__step { padding: 1.5rem 1.25rem; border-right: 1px solid var(--border); background: var(--bg-alt); }
+.ruler__step:last-child { border-right: none; }
+.ruler__step span { font-family: var(--serif); font-style: italic; color: var(--accent); font-size: 0.85rem; display: block; margin-bottom: 0.5rem; }
+.ruler__step p { font-size: 0.92rem; color: var(--text); margin: 0; max-width: none; }
+@media (max-width: 720px) { .ruler { grid-template-columns: 1fr; } .ruler__step { border-right: none; border-bottom: 1px solid var(--border); } .ruler__step:last-child { border-bottom: none; } }
+
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin: 2rem 0 1rem; }
+.metric { padding: 2.5rem 1.5rem; background: var(--bg-alt); border: 1px solid var(--border); border-radius: 4px; position: relative; overflow: hidden; }
+.metric::before { content: ""; position: absolute; top: 0; left: 0; width: 40px; height: 1px; background: var(--accent); }
+.metric__label { font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-subtle); margin-bottom: 1rem; }
+.metric__value { font-family: var(--serif); font-weight: 400; font-size: 1.25rem; line-height: 1.3; color: var(--text); }
+.metric__value em { font-style: italic; color: var(--accent-light); }
+@media (max-width: 720px) { .metrics { grid-template-columns: 1fr; } }
+
+.pull {
+  font-family: var(--serif); font-style: italic;
+  font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  line-height: 1.4; color: var(--text);
+  border-left: 1px solid var(--accent);
+  padding: 1rem 0 1rem 2rem; margin: 2.5rem 0; max-width: 720px;
+}
+
+figure.figure { margin: 2.5rem 0; }
+figure.figure figcaption { margin-top: 0.85rem; font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-subtle); text-align: center; }
+
+.image-placeholder {
+  position: relative; width: 100%; aspect-ratio: 16 / 9;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--placeholder-bg); border: 1px solid var(--border); border-radius: 6px; overflow: hidden;
+}
+.image-placeholder::before {
+  content: ""; position: absolute; inset: 0;
+  background-image: linear-gradient(var(--placeholder-pattern) 1px, transparent 1px), linear-gradient(90deg, var(--placeholder-pattern) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+}
+.image-placeholder::after { content: ""; position: absolute; top: 1rem; left: 1rem; width: 28px; height: 1px; background: var(--accent); }
+.image-placeholder__inner { position: relative; text-align: center; padding: 2rem; max-width: 80%; }
+.image-placeholder__tag { font-size: 0.7rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.85rem; display: block; }
+.image-placeholder__label { font-family: var(--serif); font-style: italic; font-size: clamp(1.05rem, 1.6vw, 1.2rem); color: var(--text); line-height: 1.4; }
+.image-placeholder--wide { aspect-ratio: 21 / 9; }
+
+.image-placeholder.has-img::before,
+.image-placeholder.has-img::after { display: none; }
+.image-placeholder img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.image-pair { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin: 2.5rem 0; }
+.image-pair .image-placeholder { aspect-ratio: 4 / 3; }
+@media (max-width: 720px) { .image-pair { grid-template-columns: 1fr; } }
+
+footer.foot { padding: 4rem 0 3rem; text-align: center; border-top: 1px solid var(--border); }
+.foot p { margin: 0 auto; color: var(--text-subtle); font-size: 0.82rem; letter-spacing: 0.18em; text-transform: uppercase; }
+.foot a { color: var(--accent-light); font-family: var(--serif); font-style: italic; text-transform: none; letter-spacing: 0; font-size: 1rem; display: inline-block; margin-top: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 2px; transition: border-color .3s; }
+.foot a:hover { border-color: var(--accent); }
+
+::selection { background: var(--accent); color: var(--bg); }
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Alternar tema">
+  <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+  <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+
+<header class="topbar">
+  <div class="topbar__inner">
+    <a href="index.html" class="back">
+      <span class="back__arrow">←</span>
+      <span>Voltar ao portfólio</span>
+    </a>
+    <span class="brand">Case Konviva LMS</span>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <span class="hero__eyebrow">Case 03 — Design System · Governança</span>
+      <h1 class="hero__title">Konviva LMS —<br><em>Auditoria e Governança</em><br>de <em>Design System</em>.</h1>
+      <p class="hero__sub">Mapeamento de inconsistências visuais, documentação técnica e governança de Design System para elevar a qualidade percebida da plataforma às vésperas do Summit da Sênior.</p>
+      <div class="tags">
+        <span class="tag">Design System</span>
+        <span class="tag">Governança</span>
+        <span class="tag">UI Design</span>
+        <span class="tag">Auditoria</span>
+        <span class="tag">B2B SaaS</span>
+      </div>
+      <figure class="figure hero-image">
+        <div class="image-placeholder image-placeholder--wide has-img" style="aspect-ratio:705/275;">
+          <img src="images/case3-hero.jpg" alt="Konviva LMS — mockup da plataforma com catálogo e busca">
+        </div>
+      </figure>
+      <div class="meta">
+        <div class="meta__item"><h4>Empresa</h4><p>Konviva LMS</p></div>
+        <div class="meta__item"><h4>Setor</h4><p>SaaS / Educação</p></div>
+        <div class="meta__item"><h4>Papel</h4><p>Designer responsável pela governança</p></div>
+        <div class="meta__item"><h4>Foco</h4><p>Governança &amp; Padrão</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">01 — Contexto</span>
+      <h2 class="section__title">Débito visual acumulado<br>às vésperas do Summit.</h2>
+      <p class="lead">A Konviva é uma plataforma LMS robusta que atende grandes empresas. O produto usava um <strong>Design System híbrido</strong>: uma base de Material Design integrada a componentes customizados desenvolvidos internamente.</p>
+      <ul class="list">
+        <li>Com o ritmo acelerado de entregas, a <strong>documentação tornou-se parcial</strong>.</li>
+        <li>A adoção dos padrões caiu, resultando em <strong>"débito visual" acumulado</strong>.</li>
+        <li>O desafio surgiu em um momento crítico: a preparação para o <strong>Summit da Sênior</strong>, com alta visibilidade estratégica.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">02 — Problema</span>
+      <h2 class="section__title">Sem governança ativa,<br>a inconsistência vira padrão.</h2>
+      <ul class="list">
+        <li><strong>Estilo e hierarquia</strong> — botões e inputs com diferentes arredondamentos e pesos visuais em telas vizinhas.</li>
+        <li><strong>Comportamento</strong> — interações inconsistentes em modais e feedbacks de sistema.</li>
+        <li><strong>Manutenibilidade</strong> — desenvolvedores em dúvida sobre qual padrão seguir, gerando retrabalho e fragmentação do código.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">03 — Objetivos</span>
+      <h2 class="section__title">Polimento visual e governança<br>como fonte única de verdade.</h2>
+      <ul class="list">
+        <li><strong>Elevar o polimento visual</strong>, garantindo maturidade e profissionalismo para o Summit da Sênior.</li>
+        <li><strong>Restabelecer a governança</strong>, com o Design System como fonte única de verdade.</li>
+        <li><strong>Otimizar a implementação</strong>, facilitando o dia a dia dos desenvolvedores com critérios claros.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">04 — Meu papel</span>
+      <h2 class="section__title">Responsável pela estratégia<br>de governança do DS.</h2>
+      <ul class="list">
+        <li>Coordenação da <strong>auditoria</strong>, com apoio de outra designer.</li>
+        <li><strong>Mapeamento e diagnóstico</strong> de desvios funcionais e visuais em toda a jornada web.</li>
+        <li><strong>Documentação técnica</strong> — registro de desvios comparando "estado atual" com "estado ideal" do DS híbrido.</li>
+        <li><strong>Priorização estratégica</strong> — quais correções trariam maior impacto visual com o menor esforço de engenharia.</li>
+        <li><strong>Facilitação</strong> — alinhamento direto com POs e desenvolvedores para viabilidade técnica.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">05 — Processo</span>
+      <h2 class="section__title">Ciclos rápidos para atender<br>ao prazo do evento.</h2>
+
+      <h3 class="subhead">Auditoria e priorização</h3>
+      <ul class="list">
+        <li><strong>Auditoria de interface</strong> — varredura completa da plataforma web, documentando cada componente fora do padrão.</li>
+        <li><strong>Análise de impacto</strong> — classificação das inconsistências por recorrência (componentes globais como botões e headers com prioridade máxima).</li>
+      </ul>
+
+      <figure class="figure">
+        <div class="image-placeholder has-img" style="aspect-ratio:705/397;">
+          <img src="images/case3-spec-botao.jpg" alt="Spec de componente de botão: versão fora do padrão (wrong) vs. versão conforme o Design System (correct)">
+        </div>
+        <figcaption>Fig. 01 — Documentação de desvio: botão fora do padrão vs. versão correta</figcaption>
+      </figure>
+
+      <h3 class="subhead">O que foi restaurado</h3>
+      <p>A solução não foi um novo design, mas a restauração da integridade visual dentro do que já existia no Design System híbrido.</p>
+      <div class="states">
+        <div class="state"><strong>Tipografia</strong>hierarquia restaurada</div>
+        <div class="state"><strong>Paleta de cores</strong>aplicação consistente</div>
+        <div class="state"><strong>Espaçamento</strong>grade unificada</div>
+        <div class="state"><strong>Componentes globais</strong>botões, inputs, modais</div>
+        <div class="state"><strong>Comportamento</strong>interações padronizadas</div>
+      </div>
+
+      <h3 class="subhead">Documentação e alinhamento</h3>
+      <ul class="list">
+        <li><strong>Documentação de desvios</strong> — guia de correções indicando qual componente do Material ou interno deveria substituir a versão inconsistente.</li>
+        <li><strong>Rito de alinhamento</strong> — reuniões com o time de desenvolvimento para validar correções sem quebrar funcionalidades legadas.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">06 — Decisões de design</span>
+      <h2 class="section__title">Três decisões que guiaram<br>a auditoria até o Summit.</h2>
+      <div class="cards">
+        <article class="card">
+          <div class="card__num">i.</div>
+          <h3>Foco em componentes recorrentes</h3>
+          <p>Priorização de componentes globais em vez de telas isoladas.</p>
+          <span class="arrow">→ corrigir um botão corrige centenas de telas</span>
+        </article>
+        <article class="card">
+          <div class="card__num">ii.</div>
+          <h3>Respeito ao legado</h3>
+          <p>Nenhum componente novo — a solução foi encontrada dentro do DS híbrido existente.</p>
+          <span class="arrow">→ evita aumentar o débito técnico</span>
+        </article>
+        <article class="card">
+          <div class="card__num">iii.</div>
+          <h3>Qualidade percebida como bússola</h3>
+          <p>Priorização de elementos de "primeira dobra" e dos fluxos que seriam demonstrados no Summit.</p>
+          <span class="arrow">→ máximo impacto visível com prazo curto</span>
+        </article>
+      </div>
+
+      <h3 class="subhead">Processo em quatro etapas</h3>
+      <div class="ruler">
+        <div class="ruler__step"><span>01</span><p>Auditoria de interface</p></div>
+        <div class="ruler__step"><span>02</span><p>Análise de impacto</p></div>
+        <div class="ruler__step"><span>03</span><p>Documentação de desvios</p></div>
+        <div class="ruler__step"><span>04</span><p>Rito de alinhamento</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">07 — Solução</span>
+      <h2 class="section__title">Restauração da integridade<br>visual, não um novo design.</h2>
+      <ul class="list">
+        <li><strong>Tipografia, paleta de cores e grade de espaçamento</strong> padronizadas nos componentes.</li>
+        <li>Interface que parecia <strong>"nativa" ao Design System</strong>, sem sensação de colagem de estilos diferentes.</li>
+        <li><strong>Guia de correções</strong> direto, usado pela engenharia como referência.</li>
+      </ul>
+      <blockquote class="pull">"Design System sem governança é apenas uma biblioteca de arquivos."</blockquote>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">08 — Resultados</span>
+      <h2 class="section__title">Um Summit sem ruído visual,<br>e uma cultura que ficou.</h2>
+      <div class="metrics">
+        <div class="metric"><div class="metric__label">Liderança</div><p class="metric__value">Feedback <em>positivo</em> direto de stakeholders e times.</p></div>
+        <div class="metric"><div class="metric__label">Engenharia</div><p class="metric__value">Documentação adotada como <em>guia oficial</em>, reduzindo dúvidas.</p></div>
+        <div class="metric"><div class="metric__label">Cultura</div><p class="metric__value">Menos componentes <em>ad-hoc</em> criados pelo time.</p></div>
+        <div class="metric"><div class="metric__label">Summit</div><p class="metric__value">Plataforma apresentada <em>sem ruídos visuais</em>.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">09 — Aprendizados</span>
+      <h2 class="section__title">Consistência é esforço contínuo,<br>não um projeto pontual.</h2>
+      <p class="lead">Este case reforçou que <strong>Design System sem governança é apenas uma biblioteca de arquivos</strong> — consistência exige esforço contínuo.</p>
+      <ul class="list">
+        <li><strong>Comunicação proativa</strong> com devs é tão importante quanto o desenho do componente.</li>
+        <li><strong>Critérios de priorização</strong> — em cenários de tempo escasso, saber o que não corrigir é fundamental.</li>
+        <li>Em produtos B2B complexos, o <strong>feedback qualitativo</strong> da diretoria vale tanto quanto métricas de conversão.</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p>Obrigada por chegar até aqui</p>
+    <a href="index.html">← voltar ao portfólio</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var root = document.documentElement;
+  var btn = document.getElementById('themeToggle');
+  var saved = null;
+  try { saved = localStorage.getItem('theme'); } catch(e){}
+  if (saved === 'light' || saved === 'dark') root.setAttribute('data-theme', saved);
+  btn.addEventListener('click', function(){
+    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('theme', next); } catch(e){}
+  });
+})();
+</script>
+</body>
+</html>

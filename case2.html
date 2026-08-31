@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Linx — Case UX/UI | Renata Oliveira</title>
+<meta name="description" content="QR Linx (Stone Co.): centralização de pagamentos digitais via QR code, unificando carteiras e provedores em uma única plataforma para lojistas e consumidores.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root[data-theme="dark"] {
+  --bg:           #0C0C0B;
+  --bg-alt:       #161614;
+  --surface:      #1E1E1B;
+  --border:       rgba(255,255,255,0.08);
+  --border-soft:  rgba(255,255,255,0.04);
+  --text:         #FAFAF8;
+  --text-muted:   rgba(255,255,255,0.55);
+  --text-subtle:  rgba(255,255,255,0.32);
+  --accent:       #B8956A;
+  --accent-light: #D4B896;
+  --tag-border:   rgba(255,255,255,0.12);
+  --tag-text:     rgba(255,255,255,0.55);
+  --topbar-bg:    rgba(12,12,11,0.72);
+  --placeholder-bg: linear-gradient(135deg, #161614 0%, #1E1E1B 100%);
+  --placeholder-pattern: rgba(184,149,106,0.06);
+  --toggle-bg:    rgba(255,255,255,0.08);
+}
+
+:root[data-theme="light"] {
+  --bg:           #F7F5F0;
+  --bg-alt:       #EFEBE2;
+  --surface:      #FFFFFF;
+  --border:       rgba(28,24,20,0.10);
+  --border-soft:  rgba(28,24,20,0.05);
+  --text:         #1C1814;
+  --text-muted:   rgba(28,24,20,0.68);
+  --text-subtle:  rgba(28,24,20,0.40);
+  --accent:       #8C6A3F;
+  --accent-light: #6B4F2D;
+  --tag-border:   rgba(28,24,20,0.14);
+  --tag-text:     rgba(28,24,20,0.60);
+  --topbar-bg:    rgba(247,245,240,0.78);
+  --placeholder-bg: linear-gradient(135deg, #EFEBE2 0%, #F7F5F0 100%);
+  --placeholder-pattern: rgba(140,106,63,0.08);
+  --toggle-bg:    rgba(0,0,0,0.06);
+}
+
+:root {
+  --container: 880px;
+  --serif: 'Playfair Display', Georgia, serif;
+  --sans:  'Jost', 'Helvetica Neue', sans-serif;
+  --transition: background-color .5s ease, color .5s ease, border-color .5s ease;
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  background: var(--bg); color: var(--text);
+  font-family: var(--sans); font-weight: 300;
+  line-height: 1.7; overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  transition: var(--transition);
+}
+
+::-webkit-scrollbar { width: 2px; }
+::-webkit-scrollbar-track { background: var(--bg-alt); }
+::-webkit-scrollbar-thumb { background: var(--accent); }
+
+a { color: inherit; text-decoration: none; }
+
+.wrap { max-width: var(--container); margin: 0 auto; padding: 0 clamp(1.5rem, 5vw, 3rem); }
+
+.theme-toggle {
+  position: fixed; bottom: 2rem; right: 2rem; z-index: 600;
+  width: 46px; height: 46px; border-radius: 50%;
+  background: var(--toggle-bg); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background 0.3s, transform 0.3s;
+  backdrop-filter: blur(12px);
+}
+.theme-toggle:hover { transform: scale(1.1); }
+.theme-toggle svg { width: 17px; height: 17px; color: var(--text); position: absolute; transition: opacity 0.3s, transform 0.4s; }
+[data-theme="dark"]  .icon-sun  { opacity: 1; transform: rotate(0deg); }
+[data-theme="dark"]  .icon-moon { opacity: 0; transform: rotate(90deg); }
+[data-theme="light"] .icon-sun  { opacity: 0; transform: rotate(-90deg); }
+[data-theme="light"] .icon-moon { opacity: 1; transform: rotate(0deg); }
+
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  background: var(--topbar-bg);
+  border-bottom: 1px solid var(--border-soft);
+  transition: var(--transition);
+}
+.topbar__inner {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.25rem clamp(1.5rem, 5vw, 3rem);
+  max-width: 1080px; margin: 0 auto; gap: 1rem;
+}
+.back {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  font-size: 0.82rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text-muted); transition: color .3s, gap .3s;
+}
+.back:hover { color: var(--accent-light); gap: 0.9rem; }
+.back__arrow { font-family: var(--serif); font-style: italic; font-size: 1rem; }
+.brand { font-family: var(--serif); font-style: italic; font-size: 0.95rem; color: var(--text-muted); letter-spacing: 0.02em; }
+
+.hero { padding: clamp(5rem, 12vw, 9rem) 0 clamp(2rem, 5vw, 3rem); }
+.hero__eyebrow {
+  display: flex; align-items: center; gap: 1rem;
+  font-size: 0.78rem; letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 2rem;
+}
+.hero__eyebrow::before { content: ""; width: 40px; height: 1px; background: var(--accent); }
+
+.hero__title {
+  font-family: var(--serif); font-weight: 300;
+  font-size: clamp(2rem, 5vw, 3.8rem);
+  line-height: 1.1; letter-spacing: -0.015em; margin-bottom: 1.5rem;
+}
+.hero__title em { font-style: italic; color: var(--accent-light); font-weight: 300; }
+
+.hero__sub {
+  font-size: clamp(1.05rem, 1.6vw, 1.2rem);
+  color: var(--text-muted); max-width: 640px;
+  font-weight: 300; margin-bottom: 2.5rem;
+}
+
+.tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.tag {
+  font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--tag-text); border: 1px solid var(--tag-border);
+  padding: 0.55rem 0.95rem; border-radius: 999px;
+}
+
+.hero-image { margin: clamp(2.5rem, 5vw, 4rem) 0 0; }
+
+.meta {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 2rem; padding: 2.5rem 0;
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  margin-top: 3rem;
+}
+.meta__item h4 {
+  font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--text-subtle); font-weight: 400; margin-bottom: 0.6rem;
+}
+.meta__item p { font-family: var(--serif); font-size: 1rem; color: var(--text); font-style: italic; }
+@media (max-width: 720px) { .meta { grid-template-columns: repeat(2, 1fr); gap: 1.75rem; } }
+
+section.block { padding: clamp(4rem, 9vw, 7rem) 0; border-bottom: 1px solid var(--border-soft); }
+.section__num { font-family: var(--serif); font-style: italic; color: var(--accent); font-size: 0.95rem; margin-bottom: 1rem; display: block; }
+.section__title {
+  font-family: var(--serif); font-weight: 300;
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  line-height: 1.2; letter-spacing: -0.01em; margin-bottom: 2rem;
+}
+.lead { font-size: clamp(1.05rem, 1.5vw, 1.2rem); color: var(--text); line-height: 1.7; font-weight: 300; margin-bottom: 1.5rem; max-width: 720px; }
+p { color: var(--text-muted); margin-bottom: 1.25rem; max-width: 720px; }
+p strong, .lead strong { color: var(--text); font-weight: 500; }
+
+ul.list { list-style: none; margin: 1.5rem 0; max-width: 720px; }
+ul.list li { position: relative; padding: 0.75rem 0 0.75rem 1.75rem; border-bottom: 1px solid var(--border-soft); color: var(--text-muted); }
+ul.list li:last-child { border-bottom: none; }
+ul.list li::before { content: ""; position: absolute; left: 0; top: 1.35rem; width: 8px; height: 1px; background: var(--accent); }
+ul.list li strong { color: var(--text); font-weight: 500; }
+
+.subhead { font-family: var(--serif); font-style: italic; font-size: 1.25rem; color: var(--accent-light); margin: 2.5rem 0 1rem; font-weight: 400; }
+
+.cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin: 2rem 0; }
+@media (max-width: 720px) { .cards { grid-template-columns: 1fr; } }
+.card {
+  background: var(--bg-alt); border: 1px solid var(--border);
+  padding: 2rem 1.75rem; border-radius: 4px;
+  transition: border-color .4s, transform .4s;
+}
+.card:hover { border-color: var(--accent); transform: translateY(-3px); }
+.card__num { font-family: var(--serif); font-style: italic; color: var(--accent); font-size: 0.9rem; margin-bottom: 0.75rem; }
+.card h3 { font-family: var(--serif); font-weight: 400; font-size: 1.2rem; line-height: 1.3; margin-bottom: 0.85rem; color: var(--text); }
+.card p { color: var(--text-muted); font-size: 0.92rem; margin-bottom: 0.85rem; }
+.card .arrow { font-family: var(--serif); font-style: italic; color: var(--accent-light); font-size: 0.92rem; display: block; padding-top: 0.5rem; border-top: 1px solid var(--border-soft); }
+
+.states { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.75rem; margin: 2rem 0; }
+.state {
+  text-align: center; padding: 1.25rem 0.75rem;
+  border: 1px solid var(--border); border-radius: 4px;
+  font-size: 0.78rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--text-muted); background: var(--bg-alt);
+}
+.state strong { display: block; color: var(--accent-light); font-weight: 400; font-family: var(--serif); font-style: italic; font-size: 0.95rem; letter-spacing: 0; text-transform: none; margin-bottom: 0.4rem; }
+@media (max-width: 720px) { .states { grid-template-columns: repeat(2, 1fr); } }
+
+.ruler { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin: 2rem 0; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+.ruler__step { padding: 1.5rem 1.25rem; border-right: 1px solid var(--border); background: var(--bg-alt); }
+.ruler__step:last-child { border-right: none; }
+.ruler__step span { font-family: var(--serif); font-style: italic; color: var(--accent); font-size: 0.85rem; display: block; margin-bottom: 0.5rem; }
+.ruler__step p { font-size: 0.92rem; color: var(--text); margin: 0; max-width: none; }
+@media (max-width: 720px) { .ruler { grid-template-columns: 1fr; } .ruler__step { border-right: none; border-bottom: 1px solid var(--border); } .ruler__step:last-child { border-bottom: none; } }
+
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin: 2rem 0 1rem; }
+.metric { padding: 2.5rem 1.5rem; background: var(--bg-alt); border: 1px solid var(--border); border-radius: 4px; position: relative; overflow: hidden; }
+.metric::before { content: ""; position: absolute; top: 0; left: 0; width: 40px; height: 1px; background: var(--accent); }
+.metric__label { font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-subtle); margin-bottom: 1rem; }
+.metric__value { font-family: var(--serif); font-weight: 400; font-size: 1.25rem; line-height: 1.3; color: var(--text); }
+.metric__value em { font-style: italic; color: var(--accent-light); }
+@media (max-width: 720px) { .metrics { grid-template-columns: 1fr; } }
+
+.pull {
+  font-family: var(--serif); font-style: italic;
+  font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  line-height: 1.4; color: var(--text);
+  border-left: 1px solid var(--accent);
+  padding: 1rem 0 1rem 2rem; margin: 2.5rem 0; max-width: 720px;
+}
+
+figure.figure { margin: 2.5rem 0; }
+figure.figure figcaption { margin-top: 0.85rem; font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-subtle); text-align: center; }
+
+.image-placeholder {
+  position: relative; width: 100%; aspect-ratio: 16 / 9;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--placeholder-bg); border: 1px solid var(--border); border-radius: 6px; overflow: hidden;
+}
+.image-placeholder::before {
+  content: ""; position: absolute; inset: 0;
+  background-image: linear-gradient(var(--placeholder-pattern) 1px, transparent 1px), linear-gradient(90deg, var(--placeholder-pattern) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+}
+.image-placeholder::after { content: ""; position: absolute; top: 1rem; left: 1rem; width: 28px; height: 1px; background: var(--accent); }
+.image-placeholder__inner { position: relative; text-align: center; padding: 2rem; max-width: 80%; }
+.image-placeholder__tag { font-size: 0.7rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.85rem; display: block; }
+.image-placeholder__label { font-family: var(--serif); font-style: italic; font-size: clamp(1.05rem, 1.6vw, 1.2rem); color: var(--text); line-height: 1.4; }
+.image-placeholder--wide { aspect-ratio: 21 / 9; }
+
+.image-placeholder.has-img::before,
+.image-placeholder.has-img::after { display: none; }
+.image-placeholder img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.image-pair { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin: 2.5rem 0; }
+.image-pair .image-placeholder { aspect-ratio: 4 / 3; }
+@media (max-width: 720px) { .image-pair { grid-template-columns: 1fr; } }
+
+footer.foot { padding: 4rem 0 3rem; text-align: center; border-top: 1px solid var(--border); }
+.foot p { margin: 0 auto; color: var(--text-subtle); font-size: 0.82rem; letter-spacing: 0.18em; text-transform: uppercase; }
+.foot a { color: var(--accent-light); font-family: var(--serif); font-style: italic; text-transform: none; letter-spacing: 0; font-size: 1rem; display: inline-block; margin-top: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 2px; transition: border-color .3s; }
+.foot a:hover { border-color: var(--accent); }
+
+::selection { background: var(--accent); color: var(--bg); }
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Alternar tema">
+  <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+  <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+
+<header class="topbar">
+  <div class="topbar__inner">
+    <a href="index.html" class="back">
+      <span class="back__arrow">←</span>
+      <span>Voltar ao portfólio</span>
+    </a>
+    <span class="brand">Case QR Linx</span>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <span class="hero__eyebrow">Case 02 — Fintech / PDV</span>
+      <h1 class="hero__title">QR Linx —<br><em>centralizando</em> pagamentos<br>com <em>carteiras digitais</em>.</h1>
+      <p class="hero__sub">Centralização de pagamentos digitais via QR code, unificando carteiras e provedores em uma única plataforma para a Stone Linx — simplificando a experiência de compra e venda.</p>
+      <div class="tags">
+        <span class="tag">UX/UI Design</span>
+        <span class="tag">UX Research</span>
+        <span class="tag">Fintech</span>
+        <span class="tag">PDV · Omnichannel</span>
+        <span class="tag">Stone Linx</span>
+      </div>
+      <figure class="figure hero-image">
+        <div class="image-placeholder image-placeholder--wide has-img" style="aspect-ratio:705/235;">
+          <img src="images/case2-hero.jpg" alt="QR Linx — centralize pagamentos com carteiras digitais utilizando QR code">
+        </div>
+      </figure>
+      <div class="meta">
+        <div class="meta__item"><h4>Cliente</h4><p>Stone Linx</p></div>
+        <div class="meta__item"><h4>Setor</h4><p>Fintech / Pagamentos</p></div>
+        <div class="meta__item"><h4>Papel</h4><p>UX/UI Designer</p></div>
+        <div class="meta__item"><h4>Foco</h4><p>Centralização &amp; PDV</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">01 — Contexto</span>
+      <h2 class="section__title">Um ecossistema de pagamentos<br>cada vez mais fragmentado.</h2>
+      <p class="lead">O cenário de pagamentos digitais no Brasil apresentava uma diversidade crescente de carteiras e métodos de pagamento — gerando complexidade tanto para consumidores quanto para lojistas.</p>
+      <ul class="list">
+        <li><strong>Diversidade de carteiras digitais</strong> e provedores de pagamento sem nenhuma unificação.</li>
+        <li>Necessidade de <strong>integrar múltiplos provedores</strong> através de uma interface única e acessível.</li>
+        <li>Oportunidade de <strong>otimizar as transações no ponto de venda</strong> e melhorar a jornada do usuário.</li>
+      </ul>
+      <p>O projeto QR Linx surgiu para atender a essa demanda de simplificação, integrando diversas carteiras e métodos de pagamento em uma única solução.</p>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">02 — Problema</span>
+      <h2 class="section__title">A fragmentação gerava atrito<br>no ponto de venda.</h2>
+      <ul class="list">
+        <li><strong>Fragmentação dos métodos</strong> de pagamento digital e complexidade na gestão de múltiplas carteiras.</li>
+        <li>Automações existentes <strong>não padronizavam o uso do QR code</strong>, inserindo-o de forma distorcida.</li>
+        <li>QR code distorcido <strong>comprometia a leitura</strong> e a experiência do usuário.</li>
+        <li><strong>Atritos na experiência de compra</strong> e lentidão nas transações.</li>
+        <li>Curva de aprendizado para a <strong>adoção de novas tecnologias</strong> de pagamento.</li>
+      </ul>
+      <figure class="figure">
+        <div class="image-placeholder has-img" style="aspect-ratio:705/337;">
+          <img src="images/case2-telas-pagamento.jpg" alt="Telas reais de pagamento com QR code, sem padronização entre provedores e automações">
+        </div>
+        <figcaption>Fig. 01 — QR codes gerados sem padronização entre provedores e automações</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">03 — Objetivos</span>
+      <h2 class="section__title">Simplificar, centralizar<br>e padronizar o pagamento.</h2>
+      <ul class="list">
+        <li><strong>Simplificar a experiência de pagamento</strong> com QR codes rápidos e fáceis de usar.</li>
+        <li><strong>Centralizar métodos de pagamento</strong> — Google Pay, Mastercard, Visa e outros — em uma única plataforma.</li>
+        <li><strong>Otimizar o processo para lojistas</strong>, reduzindo complexidade operacional e tempo de transação.</li>
+        <li><strong>Aumentar a adoção</strong> de pagamentos digitais via QR code.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">04 — Meu papel</span>
+      <h2 class="section__title">Pesquisa, prototipagem<br>e colaboração com dev.</h2>
+      <ul class="list">
+        <li><strong>Pesquisa de usuário</strong> e análise de comportamento do consumidor.</li>
+        <li><strong>Concepção e prototipagem</strong> de interfaces de pagamento.</li>
+        <li>Colaboração com <strong>equipes de desenvolvimento</strong> para garantir implementação eficaz.</li>
+        <li>Tradução de necessidades de usuário e objetivos de negócio em <strong>design funcional</strong>, com foco em usabilidade.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">05 — Processo</span>
+      <h2 class="section__title">Pesquisa, definição,<br>prototipagem e validação.</h2>
+
+      <h3 class="subhead">Pesquisa e entendimento</h3>
+      <ul class="list">
+        <li>Pesquisas de mercado e <strong>questionários</strong> sobre comportamento do consumidor com pagamentos digitais.</li>
+        <li>Análise de <strong>tendências e benchmarks</strong> de mercado.</li>
+      </ul>
+
+      <h3 class="subhead">Análise e definição</h3>
+      <ul class="list">
+        <li><strong>Mapeamento de jornadas</strong> do usuário e identificação de dores e oportunidades.</li>
+        <li>Definição de <strong>requisitos funcionais e não funcionais</strong> da plataforma.</li>
+        <li>Criação de <strong>mind maps</strong> para estruturar ideias e soluções.</li>
+      </ul>
+      <figure class="figure">
+        <div class="image-placeholder has-img" style="aspect-ratio:735/185;">
+          <img src="images/case2-processo-mapa.jpg" alt="Mapa comparando o Processo Hoje com o Processo Ideal">
+        </div>
+        <figcaption>Fig. 02 — Processo hoje vs. processo ideal</figcaption>
+      </figure>
+
+      <div class="image-pair">
+        <div class="image-placeholder has-img" style="aspect-ratio:705/707;">
+          <img src="images/case2-pesquisa-campo.jpg" alt="Pesquisa de campo em pontos de venda, observando maquininhas e QR codes em uso">
+        </div>
+        <div class="image-placeholder has-img" style="aspect-ratio:705/375;">
+          <img src="images/case2-pesquisa-questionario.jpg" alt="Questionário de pesquisa QR Linx aplicado com representantes de automação comercial">
+        </div>
+      </div>
+
+      <h3 class="subhead">Carteiras integradas</h3>
+      <p>A plataforma centralizou os principais provedores em um único display, com liberdade de escolha para o consumidor.</p>
+      <div class="states">
+        <div class="state"><strong>Google Pay</strong>carteira digital</div>
+        <div class="state"><strong>Mastercard</strong>provedor</div>
+        <div class="state"><strong>Visa</strong>provedor</div>
+        <div class="state"><strong>Carteiras locais</strong>parceiros</div>
+        <div class="state"><strong>QR dinâmico</strong>geração no PDV</div>
+      </div>
+
+      <h3 class="subhead">Concepção, prototipagem e validação</h3>
+      <ul class="list">
+        <li>Desenvolvimento de <strong>wireframes, mockups e protótipos interativos</strong> — geração de QR, seleção de método e confirmação de transação.</li>
+        <li><strong>Testes de usabilidade</strong> com usuários reais para coletar feedback e iterar sobre o design.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">06 — Decisões de design</span>
+      <h2 class="section__title">Quatro decisões que sustentam<br>a experiência de pagamento.</h2>
+      <div class="cards">
+        <article class="card">
+          <div class="card__num">i.</div>
+          <h3>Interface simplificada</h3>
+          <p>Priorização de uma interface limpa e minimalista para geração e leitura de QR codes.</p>
+          <span class="arrow">→ minimiza a carga cognitiva do usuário</span>
+        </article>
+        <article class="card">
+          <div class="card__num">ii.</div>
+          <h3>Fluxo de pagamento intuitivo</h3>
+          <p>Fluxo passo a passo com feedback claro em cada etapa, da leitura do QR até a confirmação.</p>
+          <span class="arrow">→ reduz erro e ansiedade na transação</span>
+        </article>
+        <article class="card">
+          <div class="card__num">iii.</div>
+          <h3>Integração multi-carteira</h3>
+          <p>Arquitetura flexível para integrar diversas carteiras e provedores de pagamento.</p>
+          <span class="arrow">→ liberdade de escolha para o usuário</span>
+        </article>
+        <article class="card">
+          <div class="card__num">iv.</div>
+          <h3>Segurança e confiança</h3>
+          <p>Elementos visuais e informativos que transmitem segurança durante as transações.</p>
+          <span class="arrow">→ reduz fricção emocional no pagamento</span>
+        </article>
+      </div>
+
+      <h3 class="subhead">Processo em quatro etapas</h3>
+      <div class="ruler">
+        <div class="ruler__step"><span>01</span><p>Pesquisa e entendimento</p></div>
+        <div class="ruler__step"><span>02</span><p>Análise e definição</p></div>
+        <div class="ruler__step"><span>03</span><p>Concepção e prototipagem</p></div>
+        <div class="ruler__step"><span>04</span><p>Testes e validação</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">07 — Solução</span>
+      <h2 class="section__title">Uma plataforma que unifica<br>carteiras em um único display.</h2>
+      <ul class="list">
+        <li>Lojistas geram <strong>QR codes dinâmicos</strong> para pagamento.</li>
+        <li>Consumidores pagam com a <strong>carteira digital preferida</strong>, de forma rápida e segura.</li>
+        <li>Interface guia o usuário do início ao fim, com <strong>experiência fluida e sem atritos</strong>.</li>
+        <li>Integração com <strong>grandes players</strong> do mercado de pagamentos, garantindo ampla aceitação.</li>
+        <li><strong>Manual de boas práticas de QR code</strong>, para padronizar a inserção do código pelas automações.</li>
+      </ul>
+      <blockquote class="pull">"Padronizar o QR code não é só uma questão estética — é o que garante que ele funcione."</blockquote>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">08 — Resultados</span>
+      <h2 class="section__title">Um processo estruturado —<br>sem os números finais em mãos.</h2>
+      <p class="lead">Minha participação no projeto se encerrou antes da fase de mensuração de impacto e métricas de desempenho, então não posso apontar resultados quantitativos. O que ficou consolidado foi o processo:</p>
+      <div class="metrics">
+        <div class="metric"><div class="metric__label">Padronização</div><p class="metric__value">Manual de boas práticas de QR code <em>documentado</em> para as automações.</p></div>
+        <div class="metric"><div class="metric__label">Centralização</div><p class="metric__value">Múltiplas carteiras e provedores <em>unificados</em> em uma única interface.</p></div>
+        <div class="metric"><div class="metric__label">Validação</div><p class="metric__value">Protótipos <em>testados</em> com usuários reais antes da entrega técnica.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">09 — Aprendizados</span>
+      <h2 class="section__title">Ecossistemas de pagamento pedem<br>design flexível e escalável.</h2>
+      <p class="lead">A pesquisa aprofundada sobre o comportamento do consumidor foi crucial para identificar as reais necessidades e direcionar o design para soluções eficazes.</p>
+      <ul class="list">
+        <li>A <strong>pesquisa de usuário</strong> direciona o design para as dores reais, não as presumidas.</li>
+        <li>Integrar múltiplos provedores exige um <strong>design flexível e escalável</strong>.</li>
+        <li><strong>Iteração contínua</strong> — prototipagem e testes constantes — refina a solução.</li>
+        <li><strong>Comunicação interdisciplinar</strong> com dev e negócio garante viabilidade técnica.</li>
+        <li><strong>Padronização e boas práticas</strong> são essenciais quando elementos visuais são gerados automaticamente.</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p>Obrigada por chegar até aqui</p>
+    <a href="index.html">← voltar ao portfólio</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var root = document.documentElement;
+  var btn = document.getElementById('themeToggle');
+  var saved = null;
+  try { saved = localStorage.getItem('theme'); } catch(e){}
+  if (saved === 'light' || saved === 'dark') root.setAttribute('data-theme', saved);
+  btn.addEventListener('click', function(){
+    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('theme', next); } catch(e){}
+  });
+})();
+</script>
+</body>
+</html>

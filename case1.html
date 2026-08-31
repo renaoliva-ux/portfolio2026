@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nova Conta Linx — Case UX | Renata Oliveira</title>
+<meta name="description" content="Reestruturação de jornada e saneamento de base para adequação regulatória da Conta Linx (Stone Co.), equilibrando compliance e experiência do usuário.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root[data-theme="dark"] {
+  --bg:           #0C0C0B;
+  --bg-alt:       #161614;
+  --surface:      #1E1E1B;
+  --border:       rgba(255,255,255,0.08);
+  --border-soft:  rgba(255,255,255,0.04);
+  --text:         #FAFAF8;
+  --text-muted:   rgba(255,255,255,0.55);
+  --text-subtle:  rgba(255,255,255,0.32);
+  --accent:       #B8956A;
+  --accent-light: #D4B896;
+  --tag-border:   rgba(255,255,255,0.12);
+  --tag-text:     rgba(255,255,255,0.55);
+  --topbar-bg:    rgba(12,12,11,0.72);
+  --placeholder-bg: linear-gradient(135deg, #161614 0%, #1E1E1B 100%);
+  --placeholder-pattern: rgba(184,149,106,0.06);
+  --toggle-bg:    rgba(255,255,255,0.08);
+  --figure-bg:    #FFFFFF;
+}
+
+:root[data-theme="light"] {
+  --bg:           #F7F5F0;
+  --bg-alt:       #EFEBE2;
+  --surface:      #FFFFFF;
+  --border:       rgba(28,24,20,0.10);
+  --border-soft:  rgba(28,24,20,0.05);
+  --text:         #1C1814;
+  --text-muted:   rgba(28,24,20,0.68);
+  --text-subtle:  rgba(28,24,20,0.40);
+  --accent:       #8C6A3F;
+  --accent-light: #6B4F2D;
+  --tag-border:   rgba(28,24,20,0.14);
+  --tag-text:     rgba(28,24,20,0.60);
+  --topbar-bg:    rgba(247,245,240,0.78);
+  --placeholder-bg: linear-gradient(135deg, #EFEBE2 0%, #F7F5F0 100%);
+  --placeholder-pattern: rgba(140,106,63,0.08);
+  --toggle-bg:    rgba(0,0,0,0.06);
+  --figure-bg:    #FFFFFF;
+}
+
+:root {
+  --container: 880px;
+  --serif: 'Playfair Display', Georgia, serif;
+  --sans:  'Jost', 'Helvetica Neue', sans-serif;
+  --transition: background-color .5s ease, color .5s ease, border-color .5s ease;
+}
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  background: var(--bg); color: var(--text);
+  font-family: var(--sans); font-weight: 300;
+  line-height: 1.7; overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  transition: var(--transition);
+}
+
+::-webkit-scrollbar { width: 2px; }
+::-webkit-scrollbar-track { background: var(--bg-alt); }
+::-webkit-scrollbar-thumb { background: var(--accent); }
+
+a { color: inherit; text-decoration: none; }
+
+.wrap { max-width: var(--container); margin: 0 auto; padding: 0 clamp(1.5rem, 5vw, 3rem); }
+
+.theme-toggle {
+  position: fixed; bottom: 2rem; right: 2rem; z-index: 600;
+  width: 46px; height: 46px; border-radius: 50%;
+  background: var(--toggle-bg); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background 0.3s, transform 0.3s;
+  backdrop-filter: blur(12px);
+}
+.theme-toggle:hover { transform: scale(1.1); }
+.theme-toggle svg { width: 17px; height: 17px; color: var(--text); position: absolute; transition: opacity 0.3s, transform 0.4s; }
+[data-theme="dark"]  .icon-sun  { opacity: 1; transform: rotate(0deg); }
+[data-theme="dark"]  .icon-moon { opacity: 0; transform: rotate(90deg); }
+[data-theme="light"] .icon-sun  { opacity: 0; transform: rotate(-90deg); }
+[data-theme="light"] .icon-moon { opacity: 1; transform: rotate(0deg); }
+
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  background: var(--topbar-bg);
+  border-bottom: 1px solid var(--border-soft);
+  transition: var(--transition);
+}
+.topbar__inner {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.25rem clamp(1.5rem, 5vw, 3rem);
+  max-width: 1080px; margin: 0 auto; gap: 1rem;
+}
+.back {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  font-size: 0.82rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--text-muted); transition: color .3s, gap .3s;
+}
+.back:hover { color: var(--accent-light); gap: 0.9rem; }
+.back__arrow { font-family: var(--serif); font-style: italic; font-size: 1rem; }
+.brand { font-family: var(--serif); font-style: italic; font-size: 0.95rem; color: var(--text-muted); letter-spacing: 0.02em; }
+
+.hero { padding: clamp(5rem, 12vw, 9rem) 0 clamp(2rem, 5vw, 3rem); }
+.hero__eyebrow {
+  display: flex; align-items: center; gap: 1rem;
+  font-size: 0.78rem; letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 2rem;
+}
+.hero__eyebrow::before { content: ""; width: 40px; height: 1px; background: var(--accent); }
+
+.hero__title {
+  font-family: var(--serif); font-weight: 300;
+  font-size: clamp(2rem, 5vw, 3.8rem);
+  line-height: 1.1; letter-spacing: -0.015em; margin-bottom: 1.5rem;
+}
+.hero__title em { font-style: italic; color: var(--accent-light); font-weight: 300; }
+
+.hero__sub {
+  font-size: clamp(1.05rem, 1.6vw, 1.2rem);
+  color: var(--text-muted); max-width: 640px;
+  font-weight: 300; margin-bottom: 2.5rem;
+}
+
+.tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.tag {
+  font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--tag-text); border: 1px solid var(--tag-border);
+  padding: 0.55rem 0.95rem; border-radius: 999px;
+}
+
+.hero-image { margin: clamp(2.5rem, 5vw, 4rem) 0 0; }
+
+.meta {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 2rem; padding: 2.5rem 0;
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  margin-top: 3rem;
+}
+.meta__item h4 {
+  font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--text-subtle); font-weight: 400; margin-bottom: 0.6rem;
+}
+.meta__item p { font-family: var(--serif); font-size: 1rem; color: var(--text); font-style: italic; }
+@media (max-width: 720px) { .meta { grid-template-columns: repeat(2, 1fr); gap: 1.75rem; } }
+
+section.block { padding: clamp(4rem, 9vw, 7rem) 0; border-bottom: 1px solid var(--border-soft); }
+.section__num { font-family: var(--serif); font-style: italic; color: var(--accent); font-size: 0.95rem; margin-bottom: 1rem; display: block; }
+.section__title {
+  font-family: var(--serif); font-weight: 300;
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  line-height: 1.2; letter-spacing: -0.01em; margin-bottom: 2rem;
+}
+.lead { font-size: clamp(1.05rem, 1.5vw, 1.2rem); color: var(--text); line-height: 1.7; font-weight: 300; margin-bottom: 1.5rem; max-width: 720px; }
+p { color: var(--text-muted); margin-bottom: 1.25rem; max-width: 720px; }
+p strong, .lead strong { color: var(--text); font-weight: 500; }
+
+ul.list { list-style: none; margin: 1.5rem 0; max-width: 720px; }
+ul.list li { position: relative; padding: 0.75rem 0 0.75rem 1.75rem; border-bottom: 1px solid var(--border-soft); color: var(--text-muted); }
+ul.list li:last-child { border-bottom: none; }
+ul.list li::before { content: ""; position: absolute; left: 0; top: 1.35rem; width: 8px; height: 1px; background: var(--accent); }
+ul.list li strong { color: var(--text); font-weight: 500; }
+
+.subhead { font-family: var(--serif); font-style: italic; font-size: 1.25rem; color: var(--accent-light); margin: 2.5rem 0 1rem; font-weight: 400; }
+
+.cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin: 2rem 0; }
+@media (max-width: 720px) { .cards { grid-template-columns: 1fr; } }
+.card {
+  background: var(--bg-alt); border: 1px solid var(--border);
+  padding: 2rem 1.75rem; border-radius: 4px;
+  transition: border-color .4s, transform .4s;
+}
+.card:hover { border-color: var(--accent); transform: translateY(-3px); }
+.card__num { font-family: var(--serif); font-style: italic; color: var(--accent); font-size: 0.9rem; margin-bottom: 0.75rem; }
+.card h3 { font-family: var(--serif); font-weight: 400; font-size: 1.2rem; line-height: 1.3; margin-bottom: 0.85rem; color: var(--text); }
+.card p { color: var(--text-muted); font-size: 0.92rem; margin-bottom: 0.85rem; }
+.card .arrow { font-family: var(--serif); font-style: italic; color: var(--accent-light); font-size: 0.92rem; display: block; padding-top: 0.5rem; border-top: 1px solid var(--border-soft); }
+
+.states { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.75rem; margin: 2rem 0; }
+.state {
+  text-align: center; padding: 1.25rem 0.75rem;
+  border: 1px solid var(--border); border-radius: 4px;
+  font-size: 0.78rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--text-muted); background: var(--bg-alt);
+}
+.state strong { display: block; color: var(--accent-light); font-weight: 400; font-family: var(--serif); font-style: italic; font-size: 0.95rem; letter-spacing: 0; text-transform: none; margin-bottom: 0.4rem; }
+@media (max-width: 720px) { .states { grid-template-columns: repeat(2, 1fr); } }
+
+.ruler { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin: 2rem 0; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+.ruler__step { padding: 1.5rem 1.25rem; border-right: 1px solid var(--border); background: var(--bg-alt); }
+.ruler__step:last-child { border-right: none; }
+.ruler__step span { font-family: var(--serif); font-style: italic; color: var(--accent); font-size: 0.85rem; display: block; margin-bottom: 0.5rem; }
+.ruler__step p { font-size: 0.92rem; color: var(--text); margin: 0; max-width: none; }
+@media (max-width: 720px) { .ruler { grid-template-columns: 1fr; } .ruler__step { border-right: none; border-bottom: 1px solid var(--border); } .ruler__step:last-child { border-bottom: none; } }
+
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin: 2rem 0 1rem; }
+.metric { padding: 2.5rem 1.5rem; background: var(--bg-alt); border: 1px solid var(--border); border-radius: 4px; position: relative; overflow: hidden; }
+.metric::before { content: ""; position: absolute; top: 0; left: 0; width: 40px; height: 1px; background: var(--accent); }
+.metric__label { font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-subtle); margin-bottom: 1rem; }
+.metric__value { font-family: var(--serif); font-weight: 400; font-size: 1.25rem; line-height: 1.3; color: var(--text); }
+.metric__value em { font-style: italic; color: var(--accent-light); }
+@media (max-width: 720px) { .metrics { grid-template-columns: 1fr; } }
+
+.note {
+  font-size: 0.92rem; color: var(--text-muted);
+  border-left: 1px solid var(--tag-border); padding: 0.85rem 0 0.85rem 1.25rem;
+  max-width: 720px; margin: 1.5rem 0;
+}
+.note strong { color: var(--text); font-weight: 500; }
+
+.pull {
+  font-family: var(--serif); font-style: italic;
+  font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  line-height: 1.4; color: var(--text);
+  border-left: 1px solid var(--accent);
+  padding: 1rem 0 1rem 2rem; margin: 2.5rem 0; max-width: 720px;
+}
+
+figure.figure { margin: 2.5rem 0; }
+figure.figure figcaption { margin-top: 0.85rem; font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-subtle); text-align: center; }
+
+.shot {
+  width: 100%; display: block;
+  background: var(--figure-bg);
+  border: 1px solid var(--border); border-radius: 6px;
+  overflow: hidden;
+}
+.shot img { width: 100%; height: auto; display: block; }
+.shot--wide { }
+
+::selection { background: var(--accent); color: var(--bg); }
+
+footer.foot { padding: 4rem 0 3rem; text-align: center; border-top: 1px solid var(--border); }
+.foot p { margin: 0 auto; color: var(--text-subtle); font-size: 0.82rem; letter-spacing: 0.18em; text-transform: uppercase; }
+.foot a { color: var(--accent-light); font-family: var(--serif); font-style: italic; text-transform: none; letter-spacing: 0; font-size: 1rem; display: inline-block; margin-top: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 2px; transition: border-color .3s; }
+.foot a:hover { border-color: var(--accent); }
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Alternar tema">
+  <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+  <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+
+<header class="topbar">
+  <div class="topbar__inner">
+    <a href="index.html" class="back">
+      <span class="back__arrow">←</span>
+      <span>Voltar ao portfólio</span>
+    </a>
+    <span class="brand">Case Nova Conta Linx</span>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <span class="hero__eyebrow">Case 01 — Fintech / Regulatório</span>
+      <h1 class="hero__title">Nova Conta Linx —<br><em>reestruturando</em> uma jornada<br>sob exigência do <em>BACEN</em>.</h1>
+      <p class="hero__sub">Reestruturação de jornada e saneamento de base para adequação regulatória da Conta Linx (Stone Co.), equilibrando conformidade e experiência do usuário.</p>
+      <div class="tags">
+        <span class="tag">UX Design</span>
+        <span class="tag">Jornada</span>
+        <span class="tag">Regulatório</span>
+        <span class="tag">KYC</span>
+        <span class="tag">Fintech</span>
+        <span class="tag">Sistema de Estados</span>
+      </div>
+      <figure class="figure hero-image">
+        <div class="shot"><img src="images/case1-hero.jpg" alt="Conta Linx — Reestruturação de Jornada e Saneamento de Base para Adequação Regulatória"></div>
+      </figure>
+      <div class="meta">
+        <div class="meta__item"><h4>Cliente</h4><p>Nova Conta Linx (PF) — Stone Co.</p></div>
+        <div class="meta__item"><h4>Período</h4><p>2021</p></div>
+        <div class="meta__item"><h4>Papel</h4><p>UX Designer</p></div>
+        <div class="meta__item"><h4>Foco</h4><p>Compliance &amp; Experiência</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">01 — Contexto</span>
+      <h2 class="section__title">Uma exigência do Banco Central<br>com prazo, escala e risco real.</h2>
+      <p class="lead">O projeto surgiu a partir de uma exigência do <strong>Banco Central do Brasil</strong>, que determinava que toda a base de clientes da Conta Linx deveria estar com dados cadastrais e documentação atualizados.</p>
+      <p>O cenário envolvia:</p>
+      <ul class="list">
+        <li><strong>Base legada significativa</strong> com inconsistências cadastrais.</li>
+        <li>Fluxo de nova conta <strong>permissivo</strong> — permitia envio posterior de documentos.</li>
+        <li>Risco direto de <strong>não conformidade regulatória</strong>.</li>
+      </ul>
+      <p>Além disso, o desafio não era apenas técnico — era necessário <strong>garantir adesão dos usuários a uma ação obrigatória (KYC)</strong> sem comprometer a experiência.</p>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">02 — Problema</span>
+      <h2 class="section__title">A experiência atual não sustentava<br>o nível de controle exigido.</h2>
+      <ul class="list">
+        <li>Alto volume de usuários <strong>sem envio de documentação</strong>.</li>
+        <li>Possibilidade de <strong>postergar ação crítica</strong> ("fazer depois").</li>
+        <li>Comunicação pouco efetiva sobre <strong>obrigatoriedade</strong>.</li>
+        <li>Falta de clareza sobre <strong>consequências</strong> (ex.: bloqueio).</li>
+        <li>Inconsistência entre jornada de <strong>usuários novos</strong> e <strong>legados</strong>.</li>
+      </ul>
+      <blockquote class="pull">"A conta podia ser utilizada sem validação completa, permitindo adiamento do KYC e gerando inconsistência na base."</blockquote>
+      <figure class="figure">
+        <div class="shot"><img src="images/case1-fluxo-desvio.jpg" alt="Fluxo atual com desvio enviar depois, loop e SPD destacado"></div>
+        <figcaption>Fig. 01 — Fluxo atual com desvio "enviar depois" + loop + SPD</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">03 — Objetivos</span>
+      <h2 class="section__title">Compliance sem sacrificar<br>a experiência.</h2>
+      <ul class="list">
+        <li>Garantir <strong>envio obrigatório de documentação (KYC)</strong>.</li>
+        <li><strong>Regularizar</strong> a base de clientes existente.</li>
+        <li>Criar uma jornada <strong>controlada e previsível</strong>.</li>
+        <li>Atender às exigências do <strong>BACEN</strong>.</li>
+        <li>Equilibrar <strong>compliance</strong> e <strong>experiência do usuário</strong>.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">04 — Meu papel</span>
+      <h2 class="section__title">UX Designer responsável pela<br>jornada ponta a ponta.</h2>
+      <ul class="list">
+        <li>Estruturar a <strong>jornada de regularização</strong> ponta a ponta.</li>
+        <li>Definir <strong>fluxos para múltiplos cenários</strong>.</li>
+        <li>Modelar <strong>estados da conta</strong> e suas transições.</li>
+        <li>Criar <strong>padrões de comunicação</strong> (banners, avisos, bloqueios).</li>
+        <li><strong>Prototipar soluções</strong> e alinhar com produto e tecnologia.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">05 — Processo</span>
+      <h2 class="section__title">Diagnóstico, cenários, estados<br>e um insight que mudou o foco.</h2>
+
+      <h3 class="subhead">1. Diagnóstico</h3>
+      <ul class="list">
+        <li>Mapeamento da <strong>jornada atual</strong> (nova conta + base legada).</li>
+        <li>Identificação de <strong>lacunas</strong> no envio de documentos.</li>
+        <li>Análise de <strong>comportamento de adiamento</strong>.</li>
+      </ul>
+      <figure class="figure">
+        <div class="shot"><img src="images/case1-fluxo-atual-completo.jpg" alt="Fluxo atual completo, com o ponto do problema destacado"></div>
+        <figcaption>Fig. 02 — Fluxo atual completo</figcaption>
+      </figure>
+
+      <h3 class="subhead">2. Definição de cenários</h3>
+      <p>Estruturei a experiência considerando:</p>
+      <ul class="list">
+        <li><strong>Usuários legados</strong> → atualização cadastral.</li>
+        <li><strong>Novos usuários</strong> → obrigatoriedade após login.</li>
+        <li><strong>Usuários pendentes</strong> → fluxo de retomada.</li>
+      </ul>
+
+      <h3 class="subhead">3. Modelagem de estados</h3>
+      <p>Desenhei um sistema claro de estados — cada um com mensagem específica, próxima ação clara e feedback do sistema.</p>
+      <figure class="figure">
+        <div class="shot"><img src="images/case1-modelagem-estados.png" alt="Modelagem de estados da conta: pendente, em análise, aprovado, reprovado, bloqueado"></div>
+        <figcaption>Fig. 03 — Estados da conta e transições</figcaption>
+      </figure>
+
+      <h3 class="subhead">4. Insight</h3>
+      <p class="lead">KYC automático reduz fricção na entrada, mas exige controle contínuo da base.</p>
+      <p>A automação desloca a complexidade para o pós-onboarding, tornando essencial a sanitização e o controle de estados.</p>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">06 — Decisões de design</span>
+      <h2 class="section__title">Seis decisões que sustentam<br>toda a nova jornada.</h2>
+      <div class="cards">
+        <article class="card">
+          <div class="card__num">i.</div>
+          <h3>Forçar ação no momento de maior engajamento</h3>
+          <p>O envio de documentos passou a acontecer imediatamente após o login.</p>
+          <span class="arrow">→ reduz adiamento e aumenta a taxa de conclusão</span>
+        </article>
+        <article class="card">
+          <div class="card__num">ii.</div>
+          <h3>Remoção do "enviar depois"</h3>
+          <p>Elimina a fuga do fluxo — não existe mais um caminho de adiamento.</p>
+          <span class="arrow">→ conta nasce com o KYC como etapa obrigatória</span>
+        </article>
+        <article class="card">
+          <div class="card__num">iii.</div>
+          <h3>Comunicação progressiva (régua de urgência)</h3>
+          <p>Aviso, prazo e bloqueio — em sequência, sem choque inicial.</p>
+          <span class="arrow">→ cria senso de urgência de forma gradual</span>
+        </article>
+        <article class="card">
+          <div class="card__num">iv.</div>
+          <h3>Clareza radical de consequência</h3>
+          <p>O que fazer, até quando e qual o impacto — explícito em todos os pontos.</p>
+          <span class="arrow">→ reduz ambiguidade e aumenta a ação</span>
+        </article>
+        <article class="card">
+          <div class="card__num">v.</div>
+          <h3>Sistema de estados estruturado</h3>
+          <p>Cada status da conta possui interface, mensagem e próximo passo claro.</p>
+          <span class="arrow">→ previsibilidade dentro do produto</span>
+        </article>
+        <article class="card">
+          <div class="card__num">vi.</div>
+          <h3>Consistência entre jornadas</h3>
+          <p>Usuários novos e legados seguem a mesma lógica de regularização.</p>
+          <span class="arrow">→ elimina o retrabalho de manter dois padrões</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">07 — Solução</span>
+      <h2 class="section__title">Do fluxo permissivo ao fluxo<br>com gating de acesso.</h2>
+
+      <h3 class="subhead">A. Fluxo ideal (novo modelo)</h3>
+      <ul class="list">
+        <li>Envio <strong>obrigatório</strong> de documentos no início.</li>
+        <li>Conta <strong>nasce com restrições</strong>.</li>
+        <li>Liberação <strong>progressiva</strong> após validação.</li>
+      </ul>
+      <figure class="figure">
+        <div class="shot"><img src="images/case1-fluxo-ideal.jpg" alt="Fluxo ideal: validação antes do uso da conta"></div>
+        <figcaption>Fig. 04 — Fluxo linear clean com gating de acesso</figcaption>
+      </figure>
+      <figure class="figure">
+        <div class="shot"><img src="images/case1-mockup-ideal.jpg" alt="Telas do fluxo ideal: onboarding, KYC e home"></div>
+        <figcaption>Fig. 05 — Telas do novo fluxo: Onboarding → KYC → Home</figcaption>
+      </figure>
+
+      <h3 class="subhead">B. Fluxo anterior (problema)</h3>
+      <ul class="list">
+        <li>Conta <strong>ativa antes</strong> da validação completa.</li>
+        <li>Possibilidade de <strong>adiamento</strong>.</li>
+        <li><strong>Uso parcial</strong> da conta.</li>
+        <li>Exceções → <strong>análise manual</strong> → retrabalho.</li>
+      </ul>
+      <figure class="figure">
+        <div class="shot"><img src="images/case1-fluxo-anterior.jpg" alt="Fluxo anterior: com adiamento e análise manual"></div>
+        <figcaption>Fig. 06 — Fluxo com "enviar depois" + loop + SPD</figcaption>
+      </figure>
+      <figure class="figure">
+        <div class="shot"><img src="images/case1-mockup-anterior.png" alt="Telas do fluxo anterior, com possibilidade de adiamento e inconsistência de bloqueio"></div>
+        <figcaption>Fig. 07 — Telas do fluxo anterior: adiamento até a inconsistência de bloqueio</figcaption>
+      </figure>
+
+      <h3 class="subhead">C. Sanitização da base</h3>
+      <ul class="list">
+        <li><strong>Comunicação progressiva</strong>.</li>
+        <li>Definição de <strong>prazo</strong>.</li>
+        <li><strong>Bloqueio</strong> como mecanismo de controle.</li>
+        <li><strong>Regularização guiada</strong>.</li>
+      </ul>
+      <figure class="figure">
+        <div class="shot"><img src="images/case1-sanitizacao.jpg" alt="Fluxo com sanitização: regularização pós uso"></div>
+        <figcaption>Fig. 08 — Timeline aviso → prazo → bloqueio → regularização</figcaption>
+      </figure>
+      <figure class="figure">
+        <div class="shot"><img src="images/case1-mockup-sanitizacao.png" alt="Telas da sanitização: aviso pendente, prazo para envio, KYC, bloqueio e regularização guiada"></div>
+        <figcaption>Fig. 09 — Telas da sanitização: do aviso pendente à regularização guiada</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">08 — Resultados</span>
+      <h2 class="section__title">Mais controle, menos ruído,<br>uma base pronta para escalar.</h2>
+      <ul class="list">
+        <li><strong>Redução de retrabalho operacional</strong> (menos loops de documentos).</li>
+        <li><strong>Menor dependência</strong> de análise manual.</li>
+        <li><strong>Maior previsibilidade</strong> da jornada.</li>
+        <li><strong>Aumento da clareza</strong> para o usuário.</li>
+        <li><strong>Adequação</strong> às exigências do BACEN.</li>
+      </ul>
+      <p class="note"><strong>Nota:</strong> o produto foi descontinuado posteriormente por decisão estratégica, mas o projeto estruturou uma abordagem consistente de validação e controle de risco.</p>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <span class="section__num">09 — Aprendizados</span>
+      <h2 class="section__title">UX como ferramenta de<br>condução de comportamento crítico.</h2>
+      <ul class="list">
+        <li><strong>Automação não elimina complexidade</strong> — redistribui.</li>
+        <li>UX em KYC é sobre <strong>confiança e clareza</strong>.</li>
+        <li><strong>Fluxos de exceção</strong> definem a qualidade da experiência.</li>
+        <li><strong>Restrições bem aplicadas</strong> melhoram entendimento e ação.</li>
+        <li>UX impacta diretamente <strong>risco regulatório</strong> e operação.</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p>Obrigada por chegar até aqui</p>
+    <a href="index.html">← voltar ao portfólio</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var root = document.documentElement;
+  var btn = document.getElementById('themeToggle');
+  var saved = null;
+  try { saved = localStorage.getItem('theme'); } catch(e){}
+  if (saved === 'light' || saved === 'dark') root.setAttribute('data-theme', saved);
+  btn.addEventListener('click', function(){
+    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('theme', next); } catch(e){}
+  });
+})();
+</script>
+</body>
+</html>
